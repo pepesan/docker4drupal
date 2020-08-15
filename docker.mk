@@ -69,7 +69,7 @@ composer:
 ##		For example: make drush "watchdog:show --type=cron"
 .PHONY: drush
 drush:
-	docker exec $(shell docker ps --filter name='^/$(PROJECT_NAME)_php' --format "{{ .ID }}") drush -r $(DRUPAL_ROOT) $(filter-out $@,$(MAKECMDGOALS))
+	docker-compose exec -u 1001 php drush -r $(DRUPAL_ROOT)/web $(filter-out $@,$(MAKECMDGOALS))
 
 ## logs	:	View containers logs.
 ##		You can optinally pass an argument with the service name to limit logs
