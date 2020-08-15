@@ -1,4 +1,2 @@
 .idea/
 .docker-sync/
-vendor
-compose.lock
