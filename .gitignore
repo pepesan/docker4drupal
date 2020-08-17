@@ -1,2 +1,7 @@
 .idea/
 .docker-sync/
+dev/volumes
+dev/drupal
+prod/volumes
+prod/drupal
+/prod/drupal/composer.lock
