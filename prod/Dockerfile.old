@@ -1,0 +1,71 @@
+FROM php:7.4-fpm
+
+# Set working directory
+WORKDIR /var/www
+
+# Install dependencies
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+  autoconf \
+  build-essential \
+  apt-utils \
+  zlib1g-dev \
+  libzip-dev \
+  unzip \
+  zip \
+  libzip-dev \
+  libmagick++-dev \
+  libmagickwand-dev \
+  libpq-dev \
+  libfreetype6-dev \
+  libjpeg62-turbo-dev \
+  libpng-dev \
+  libwebp-dev \
+  libxpm-dev \
+  git \
+  curl
+
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# GD
+RUN docker-php-ext-install gd
+
+RUN docker-php-ext-install intl pdo_mysql pdo_pgsql mysqli zip opcache
+RUN docker-php-ext-enable intl pdo_mysql pdo_pgsql mysqli zip opcache
+
+RUN pecl install imagick-3.4.3
+
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
+RUN docker-php-ext-enable imagick
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Clear package lists
+RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
+
+
+# Add user for php application
+RUN groupadd -g 1000 www
+RUN useradd -u 1000 -ms /bin/bash -g www www
+
+# Copy existing application directory contents
+COPY ./drupal /var/www
+
+## Copy existing application directory permissions
+#COPY --chown=www:www . /var/www
+
+# Change current user to www
+USER www
+
+# Set working directory
+WORKDIR /var/www
+# Install Drush
+RUN composer global require drush/drush && \
+    composer global update
+ENV PATH=$PATH:/home/www/.composer/vendor/bin
+# Expose port 9000 and start php-fpm server
+EXPOSE 9000
+ENTRYPOINT ["chown -R www:www /var/www"]
+CMD ["php-fpm"]
