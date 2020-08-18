@@ -7,6 +7,8 @@ services:
     #image: drupal:8.8.8-fpm-buster
     container_name: app
     restart: unless-stopped
+    depends_on:
+      - mariadb
     tty: true
     environment:
       SERVICE_NAME: app
@@ -27,6 +29,7 @@ services:
     restart: unless-stopped
     depends_on:
       - app
+      - mariadb
     tty: true
     ports:
       - "80:80"

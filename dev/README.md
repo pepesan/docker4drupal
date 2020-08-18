@@ -8,13 +8,15 @@ Revisionado en [Repositorio pepesan Docker4Drupal](https://github.com/pepesan/do
 * Docker
 * docker-compose
 # Arraque de los servicios
-<code>docker-compose up -d</code>
-# Descarga de drupal
-* mkdir drupal
-* composer create-project drupal/recommended-project drupal
-# Instalación de Drupal
-nota: 1001 es el propietario y grupo de la carpeta
-# Docker compose exec
-<code>docker-compose exec -u 1001 -e DB_HOST=$DB_HOST -e DB_USER=$DB_USER -e DB_PASSWORD_$DB_PASSWORD -e DB_NAME=$DB_NAME -e ADMIN_PASSWORD=$ADMIN_PASSWORD php drush -r /var/www/html/web si standard --db-url=mysql://$DB_USER:$DB_PASSWORD@$DB_HOST/$DB_NAME --account-pass=$ADMIN_PASSWORD
-</code>
-  
+El proceso de arranque se ha modificado para disponer de una serie de scripts que permiten la instalación de drupal
+# QuickStart
+## Fichero .env
+En el fichero .env tenemos la variables de entorno que definen la instalación del entorno de desarrollo, revísalo para que esté todo correcto
+## Lanza el script
+./instala_y_lanza.sh
+## ¿Qué hace?
+* descarga_drupal.sh: descarga drupal en el directorio drupal
+* Ejecuta del docker-compose up -d
+* Espera a que esté disponible el servicio 10 segundo
+* instala_drupal.sh: realiza la instalación de drupal ya dentro de los contenedores
+

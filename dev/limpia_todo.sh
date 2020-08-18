@@ -2,5 +2,5 @@
 
 docker-compose down
 docker images prune -a
-docker volume prune
+docker volume prune -f
 sudo rm -rf volumes drupal
