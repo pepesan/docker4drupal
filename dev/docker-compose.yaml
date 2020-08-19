@@ -59,6 +59,7 @@ services:
     volumes:
       - ./volumes/mariadb:/var/lib/mysql/
       - ./my.cnf:/etc/mysql/my.cnf
+      - ./volumes/mariadb-tmp:/tmp
     networks:
       - app-network
 
