@@ -1,0 +1,74 @@
+version: '3'
+services:
+
+  #PHP Service
+  app-prod:
+    image: "$DOCKER_IMAGE_PROD"
+    #image: drupal:8.8.8-fpm-buster
+    container_name: app-prod
+    restart: unless-stopped
+    depends_on:
+      - mariadb-prod
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www/web
+    ports:
+      - "9002:9000"
+    volumes:
+      #- ./drupal:/var/www
+      - ./local-prod.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - app-network
+
+  #Nginx Service
+  webserver-prod:
+    #image: nginx:alpine
+    image: "$DOCKER_IMAGE_NGINX_PROD"
+    container_name: webserver-prod
+    restart: unless-stopped
+    depends_on:
+      - app-prod
+      - mariadb-prod
+    tty: true
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      #- ./drupal/web:/var/www/html
+      - ./app-prod.conf:/etc/nginx/conf.d/default.conf
+      - ./volumes-prod/logs:/var/log/nginx
+    networks:
+      - app-network
+
+  #MySQL Service
+  mariadb-prod:
+    image: mariadb:10.5.5-focal
+    container_name: mariadb-prod
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3308:3306"
+    environment:
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: drupal
+    volumes:
+      - ./volumes-prod/mariadb:/var/lib/mysql/
+      - ./my.cnf:/etc/mysql/my.cnf
+      - ./volumes-prod/mariadb-tmp:/tmp
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+#Volumes
+volumes:
+  dbdata:
+    driver: local
