@@ -60,25 +60,16 @@ RUN { \
 # https://github.com/drupal/drupal/blob/9.0.1/composer.lock#L4052-L4053
 COPY --from=composer:1.10 /usr/bin/composer /usr/local/bin/
 
-# https://www.drupal.org/node/3060/release
-ENV DRUPAL_VERSION 8.9.3
+
 
 #Copiando Drupal
 WORKDIR /var/www
-COPY drupal/* /var/www
-# Copiando el fichero de configuración
-COPY settings.php /var/www/web/sites/default
-RUN set -eux; \
-	chown -R www-data:www-data web/sites web/modules web/themes; \
-	rmdir /var/www/html; \
-	ln -sf /var/www/web /var/www/html; \
 
 
 
 ENV PATH=${PATH}:/opt/drupal/vendor/bin
 
 # Install Drush
-USER www-data
 WORKDIR /var/www
 USER root
 RUN mkdir /var/www/.composer
@@ -88,3 +79,30 @@ RUN mkdir /drush
 RUN mv /root/.composer /drush
 ENV PATH=$PATH:/drush/.composer/vendor/bin
 
+# https://www.drupal.org/node/3060/release
+ENV DRUPAL_VERSION 8.9.3
+USER root
+COPY drupal /drupal
+RUN set -eux; \
+    cp -rp /drupal/* /var/www/
+RUN set -eux; \
+    chmod -R 755 /var/www; \
+    chown -R www-data:www-data /var/www
+# RUN mkdir /var/www/web/sites/default/files
+# Copiando el fichero de configuración
+COPY settings.php web/sites/default
+RUN set -eux; \
+    chmod -R 640 web/sites/default/settings.php; \
+    chown -R www-data:www-data web/sites/default/settings.php; \
+	rmdir /var/www/html; \
+	ln -sf /var/www/web /var/www/html;
+
+#RUN set -eux; \
+#    export RANDOM_SALT=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1); \
+#    echo "\$settings['hash_salt']='${RANDOM_SALT}';" >> /var/www/web/sites/default/settings.php
+
+#COPY entrypoint-app.sh /bin
+#RUN chmod +x /bin/entrypoint-app.sh
+#ENTRYPOINT ["/bin/entrypoint-app.sh"]
+VOLUME /var/www/web/sites/default/files
+EXPOSE 9000

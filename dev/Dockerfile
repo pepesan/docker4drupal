@@ -87,5 +87,5 @@ RUN composer global require drush/drush  && \
 RUN mkdir /drush
 RUN mv /root/.composer /drush
 ENV PATH=$PATH:/drush/.composer/vendor/bin
-#ENTRYPOINT ["chmod 775 /var/www/web/sites/default/files; chmod 775 /var/html/web/sites/default"]
+
 

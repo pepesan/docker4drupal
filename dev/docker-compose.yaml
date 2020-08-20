@@ -6,7 +6,7 @@ services:
     image: "$DOCKER_IMAGE"
     #image: drupal:8.8.8-fpm-buster
     container_name: app
-    restart: unless-stopped
+    restart: always
     depends_on:
       - mariadb
     tty: true
@@ -17,7 +17,7 @@ services:
     ports:
       - "9001:9000"
     volumes:
-      - ./drupal:/var/www
+      - "../drupal:/var/www:rw"
       - ./local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - app-network
@@ -35,7 +35,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./drupal:/var/www
+      - ../drupal:/var/www
       - ./app.conf:/etc/nginx/conf.d/default.conf
       - ./volumes/logs:/var/log/nginx
     networks:

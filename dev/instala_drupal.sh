@@ -1,6 +1,6 @@
 #!/bin/bash
 source .env
-docker-compose exec -u root app chown -R www:www /var/www
+docker-compose exec -u root app chown -R www-data:www-data /var/www
 #echo "instalando en mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${DB_HOST}/${MYSQL_DATABASE}"
 echo "instalando en mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${DB_HOST}/${MYSQL_DATABASE}"
 docker-compose exec -u www-data \

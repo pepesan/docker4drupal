@@ -3,10 +3,12 @@ services:
 
   #PHP Service
   app:
-    image: "$DOCKER_IMAGE"
+    image: "$DOCKER_IMAGE_PROD"
     #image: drupal:8.8.8-fpm-buster
     container_name: app
     restart: unless-stopped
+    depends_on:
+      - mariadb
     tty: true
     environment:
       SERVICE_NAME: app
@@ -16,23 +18,24 @@ services:
       - "9001:9000"
     volumes:
       #- ./drupal:/var/www
-      - ./local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./local-prod.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - app-network
 
   #Nginx Service
   webserver:
-    image: nginx:alpine
+    image: "$DOCKER_IMAGE_NGINX_PROD"
     container_name: webserver
     restart: unless-stopped
     depends_on:
       - app
+      - mariadb
     tty: true
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./drupal/web:/var/www/web
+      #- ./drupal/web:/var/www/html
       - ./app.conf:/etc/nginx/conf.d/default.conf
       - ./volumes/logs:/var/log/nginx
     networks:
