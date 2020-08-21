@@ -1,5 +1,6 @@
 #!/bin/bash
 source .env
+set -eux
 #docker-compose exec app pwd
 #docker-compose exec app composer -d../ update
 #docker-compose exec app composer -d../ install
@@ -23,3 +24,18 @@ docker-compose exec -u www-data \
     --site-name=$PROJECT_NAME \
     -y \
     --debug
+docker-compose exec -u www-data \
+  app composer \
+  require \
+  -d /var/www \
+  drupal/bootstrap
+docker-compose exec -u www-data \
+  app drush -y \
+  en bootstrap
+docker-compose exec -u www-data \
+  app drush  -y \
+  config:set system.theme default bootstrap
+docker-compose exec -u www-data \
+  app drush  -y \
+  updatedb-status
+./backup-database.sh

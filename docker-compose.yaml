@@ -61,6 +61,11 @@ services:
       - ./volumes/mariadb:/var/lib/mysql/
       - ./my.cnf:/etc/mysql/my.cnf
       - ./volumes/mariadb-tmp:/tmp
+    healthcheck:
+      test: "mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD --execute \"SHOW DATABASES;\""
+      interval: 3s
+      timeout: 1s
+      retries: 5
     networks:
       - app-network
 

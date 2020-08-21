@@ -17,7 +17,7 @@ RUN set -eux; \
 		libpng-dev \
 		libpq-dev \
 		libzip-dev \
-		unzip \
+		zip \
 	; \
 	\
 	docker-php-ext-configure gd \
@@ -47,10 +47,11 @@ RUN set -eux; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*
 
-#Install mysql client
+#Install mysql client, unzip and git
 RUN     set -eux; \
         apt-get update; \
-		apt-get -y install default-mysql-client
+		apt-get -y install default-mysql-client unzip git curl; \
+		apt-get clean
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
 RUN { \

@@ -785,3 +785,4 @@ $databases['default']['default'] = array (
   'driver' => 'mysql',
 );
 $settings['hash_salt']="1223123123123";
+$settings['config_sync_directory'] = 'sites/default/files/sync';
