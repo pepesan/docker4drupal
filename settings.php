@@ -786,3 +786,24 @@ $databases['default']['default'] = array (
 );
 $settings['hash_salt']="1223123123123";
 $settings['config_sync_directory'] = 'sites/default/files/sync';
+if (extension_loaded('redis')) {
+  //$settings['redis.connection']['interface'] = 'PhpRedis'; // Can be "Predis".
+  $settings['redis.connection']['interface'] = 'Predis'; // Can be "Predis".
+  $settings['redis.connection']['host'] = 'redis';
+  $settings['redis.connection']['port'] = '6379';
+  $settings['redis.connection']['base'] = 8;
+  /** Optional prefix for cache entries */
+  $settings['cache_prefix'] = 'prefijo-';
+  // Use for all bins otherwise specified.
+  $settings['cache']['default'] = 'cache.backend.redis';
+  // Always set the fast backend for bootstrap, discover and config, otherwise this gets lost when redis is enabled.
+  $settings['cache']['bins']['bootstrap'] = 'cache.backend.chainedfast';
+  $settings['cache']['bins']['discovery'] = 'cache.backend.chainedfast';
+  $settings['cache']['bins']['config'] = 'cache.backend.chainedfast';
+
+  $settings['container_yamls'][] = 'modules/contrib/redis/example.services.yml';
+  $settings['container_yamls'][] = 'modules/contrib/redis/redis.services.yml';
+}
+$settings['trusted_host_patterns'] = [
+  '^localhost$',
+];

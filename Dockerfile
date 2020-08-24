@@ -62,6 +62,11 @@ RUN { \
 		echo 'opcache.fast_shutdown=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
+# Install redis dependency
+RUN pecl install -o -f redis \
+&&  rm -rf /tmp/pear \
+&&  echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+
 COPY --from=composer:1.10 /usr/bin/composer /usr/local/bin/
 
 ENV DRUSH_VERSION=8.4.0

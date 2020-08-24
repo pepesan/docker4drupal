@@ -8,6 +8,14 @@ set -eux
 docker-compose exec -u root app chown -R www-data:www-data /var/www
 #echo "instalando en mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${DB_HOST}/${MYSQL_DATABASE}"
 echo "instalando en mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${DB_HOST}/${MYSQL_DATABASE}"
+
+#Dependencies installation: redis, bootstrap theme
+docker-compose exec -u www-data \
+  app composer \
+  require \
+  -d /var/www \
+  drupal/bootstrap drupal/redis predis/predis
+
 docker-compose exec -u www-data \
     -e DB_HOST=$DB_HOST \
     -e DB_USER=$MYSQL_USER \
@@ -25,13 +33,8 @@ docker-compose exec -u www-data \
     -y \
     --debug
 docker-compose exec -u www-data \
-  app composer \
-  require \
-  -d /var/www \
-  drupal/bootstrap
-docker-compose exec -u www-data \
   app drush -y \
-  en bootstrap
+  en bootstrap redis
 docker-compose exec -u www-data \
   app drush  -y \
   config:set system.theme default bootstrap
@@ -39,3 +42,5 @@ docker-compose exec -u www-data \
   app drush  -y \
   updatedb-status
 ./backup-database.sh
+
+sudo chmod 775 settings.php

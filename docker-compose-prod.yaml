@@ -18,6 +18,7 @@ services:
       - "9002:9000"
     volumes:
       #- ./drupal:/var/www
+      #- ./settings-prod.php:/var/www/web/sites/default/settings.php
       - ./local-prod.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - app-network-prod
