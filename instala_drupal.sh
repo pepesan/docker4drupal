@@ -40,6 +40,9 @@ docker-compose exec -u www-data \
   config:set system.theme default bootstrap
 docker-compose exec -u www-data \
   app drush  -y \
+  locale-update
+docker-compose exec -u www-data \
+  app drush  -y \
   updatedb-status
 ./backup-database.sh
 

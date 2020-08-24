@@ -66,6 +66,19 @@ RUN { \
 RUN pecl install -o -f redis \
 &&  rm -rf /tmp/pear \
 &&  echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+# Install apcu dependency
+ARG APCU_VERSION=5.1.18
+RUN pecl install apcu-${APCU_VERSION} && docker-php-ext-enable apcu
+RUN rm -rf /tmp/pear
+RUN echo "extension=apcu.so" >> /usr/local/etc/php/apcu.ini
+RUN echo "apc.enable_cli=1" >> /usr/local/etc/php/apcu.ini
+RUN echo "apc.enable=1" >> /usr/local/etc/php/apcu.ini
+#APCU
+# Upload progress
+RUN git clone https://github.com/php/pecl-php-uploadprogress/ /usr/src/php/ext/uploadprogress/ && \
+    docker-php-ext-configure uploadprogress && \
+    docker-php-ext-install uploadprogress
+# Uploadprogress
 
 COPY --from=composer:1.10 /usr/bin/composer /usr/local/bin/
 
