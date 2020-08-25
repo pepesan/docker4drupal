@@ -807,3 +807,4 @@ if (extension_loaded('redis')) {
 $settings['trusted_host_patterns'] = [
   '^localhost$',
 ];
+$config['system.performance']['cache']['page']['max_age'] =2592000;

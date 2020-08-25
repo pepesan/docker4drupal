@@ -805,3 +805,7 @@ if (extension_loaded('redis')) {
   $settings['container_yamls'][] = 'modules/contrib/redis/example.services.yml';
   $settings['container_yamls'][] = 'modules/contrib/redis/redis.services.yml';
 }
+$settings['trusted_host_patterns'] = [
+  '^localhost$',
+];
+$config['system.performance']['cache']['page']['max_age'] =2628000;

@@ -38,6 +38,32 @@ docker-compose exec -u www-data \
 docker-compose exec -u www-data \
   app drush  -y \
   config:set system.theme default bootstrap
+# Disable Page cache and big_pipe for varnish
+
+docker-compose exec -u www-data \
+  app drush  -y \
+  pmu page_cache big_pipe
+# Install varnish
+#docker-compose exec -u www-data \
+#  app composer \
+#  require \
+#  -d /var/www \
+#  drupal/purge drupal/varnish_purge  drupal/adv_varnish
+docker-compose exec -u www-data \
+  app composer \
+  require \
+  -d /var/www \
+  drupal/adv_varnish
+
+#docker-compose exec -u www-data \
+#  app drush  -y \
+#  en purge purge_drush purge_tokens purge_ui purge_processor_cron purge_processor_lateruntime purge_queuer_coretags varnish_purger varnish_purge_tags adv_varnish
+
+docker-compose exec -u www-data \
+  app drush  -y \
+  en adv_varnish
+
+# Locale management
 docker-compose exec -u www-data \
   app drush  -y \
   locale-check
@@ -47,6 +73,7 @@ docker-compose exec -u www-data \
 docker-compose exec -u www-data \
   app drush  -y \
   updatedb-status
+# Drush Cron
 docker-compose exec -u www-data \
   app drush  -y \
   cron
