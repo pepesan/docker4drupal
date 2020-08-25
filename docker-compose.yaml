@@ -78,6 +78,22 @@ services:
     - 6379:6379
     networks:
       - app-network
+  crond:
+    image: "$DOCKER_IMAGE"
+    container_name: crond
+    environment:
+      CRONTAB: "0 * * * * drush -r /var/www/web cron"
+      #LD_PRELOAD: "/usr/local/lib/preloadable_libiconv.so"
+    #command: crond -f -d 0
+    #command: cron && tail -f /var/log/cron.log
+    command: drush -r /var/www/web cron
+    depends_on:
+      - app
+    networks:
+      - app-network
+    volumes:
+      - ./drupal:/var/www
+      #¡- ./volumes/cron.log:/var/log/cron.log
 #Docker Networks
 networks:
   app-network:

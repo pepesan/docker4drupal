@@ -17,6 +17,7 @@ RUN set -eux; \
 		libpng-dev \
 		libpq-dev \
 		libzip-dev \
+		cron \
 		zip \
 	; \
 	\
@@ -79,6 +80,28 @@ RUN git clone https://github.com/php/pecl-php-uploadprogress/ /usr/src/php/ext/u
     docker-php-ext-configure uploadprogress && \
     docker-php-ext-install uploadprogress
 # Uploadprogress
+# cron
+RUN apt update;\
+    apt install -y cron libtool; \
+    apt clean
+# cron
+##Iconv
+RUN rm /usr/bin/iconv \
+  && curl -SL http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz | tar -xz -C . \
+  && cd libiconv-1.14 \
+  && ./configure --prefix=/usr/local \
+  && curl -SL https://raw.githubusercontent.com/mxe/mxe/7e231efd245996b886b501dad780761205ecf376/src/libiconv-1-fixes.patch \
+  | patch -p1 -u  \
+  && make \
+  && make install \
+  #&& libtool --finish /usr/local/lib \
+  && cd .. \
+  && rm -rf libiconv-1.14
+
+ENV LD_PRELOAD /usr/local/lib/preloadable_libiconv.so
+## Iconv
+
+
 
 COPY --from=composer:1.10 /usr/bin/composer /usr/local/bin/
 
