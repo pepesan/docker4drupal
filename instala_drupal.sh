@@ -38,11 +38,23 @@ docker-compose exec -u www-data \
 docker-compose exec -u www-data \
   app drush  -y \
   config:set system.theme default bootstrap
-# Disable Page cache and big_pipe for varnish
 
+#Solr and server by module
+docker-compose exec -u www-data \
+  app composer \
+  require \
+  -d /var/www \
+  drupal/search_api_solr pepesan/search_api_solr_custom_server
+#docker-compose exec -u www-data \
+#  app drush  -y \
+#  en search_api_solr search_api_solr_defaults
 docker-compose exec -u www-data \
   app drush  -y \
-  pmu page_cache big_pipe
+  en search_api_solr search_api_solr_custom_server
+# Disable Page cache and big_pipe for varnish and search for solr
+docker-compose exec -u www-data \
+  app drush  -y \
+  pmu page_cache big_pipe search
 # Install varnish
 #docker-compose exec -u www-data \
 #  app composer \
@@ -63,6 +75,9 @@ docker-compose exec -u www-data \
   app drush  -y \
   en adv_varnish
 
+docker-compose exec \
+  solr \
+  solr create_core -c drupal -d /opt/solr/server/solr/drupal
 # Locale management
 docker-compose exec -u www-data \
   app drush  -y \

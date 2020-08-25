@@ -2,3 +2,4 @@ volumes
 volumes-prod
 drupal
 .idea
+solr-tmp

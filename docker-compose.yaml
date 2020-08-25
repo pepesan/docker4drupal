@@ -112,6 +112,21 @@ services:
     #  VARNISH_BACKEND_PORT: 80
     #  VARNISH_CONFIG_PRESET: drupal
     #  VARNISH_ALLOW_UNRESTRICTED_PURGE: 1
+  solr:
+    image: solr
+    container_name: "solr"
+    environment:
+      SOLR_DEFAULT_CONFIG_SET: $SOLR_CONFIG_SET
+      SOLR_HEAP: 1024m
+    networks:
+      - app-network
+    volumes:
+    #- ./solr-tmp:/tmp
+    - ./solr-config:/opt/solr/server/solr/drupal
+    #- ./solr-config2:/opt/solr/data/drupal
+
+    ports:
+    - 8983:8983
 #Docker Networks
 networks:
   app-network:
