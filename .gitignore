@@ -3,4 +3,5 @@ volumes-prod
 drupal
 .idea
 solr-tmp
-solr-config/data
+solr-config/data/
+solr-config/data/index

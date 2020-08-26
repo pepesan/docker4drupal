@@ -63,7 +63,7 @@ docker-compose exec \
   solr \
   solr create_core -c drupal -d /opt/solr/server/solr/drupal
 
-#Falta coger el config.zip y aplicarlo
+#Coger el config.zip y aplicarlo
 #export SOLR_VERSION=8.6.1
 #sudo chmod 777 ./volumes/app-tmp
 #cp config-drupal.zip ./volumes/app-tmp
@@ -74,6 +74,12 @@ docker-compose exec \
 #docker-compose exec -u www-data \
 #  app drush  -y \
 #  en search_api_solr search_api_solr_custom_server
+sudo chmod 777 ./volumes/app-tmp
+sudo mkdir -p ./volumes/app-tmp/import
+sudo cp search_api.server.default_solr_server.yml ./volumes/app-tmp/import
+docker-compose exec -u www-data \
+  app drush  -y \
+  config-import --partial --source /tmp/import
 
 # Install varnish
 #docker-compose exec -u www-data \
