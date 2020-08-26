@@ -124,14 +124,9 @@ services:
     #- ./solr-tmp:/tmp
     - ./solr-config:/opt/solr/server/solr/drupal
     #- ./solr-config2:/opt/solr/data/drupal
-
     ports:
     - 8983:8983
 #Docker Networks
 networks:
   app-network:
     driver: bridge
-#Volumes
-volumes:
-  dbdata:
-    driver: local

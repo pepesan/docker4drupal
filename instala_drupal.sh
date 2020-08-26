@@ -34,7 +34,10 @@ docker-compose exec -u www-data \
     --debug
 docker-compose exec -u www-data \
   app drush -y \
-  en bootstrap redis
+  en redis
+docker-compose exec -u www-data \
+  app drush -y \
+  theme:enable bootstrap
 docker-compose exec -u www-data \
   app drush  -y \
   config:set system.theme default bootstrap
@@ -44,17 +47,34 @@ docker-compose exec -u www-data \
   app composer \
   require \
   -d /var/www \
-  drupal/search_api_solr pepesan/search_api_solr_custom_server
-#docker-compose exec -u www-data \
-#  app drush  -y \
-#  en search_api_solr search_api_solr_defaults
-docker-compose exec -u www-data \
-  app drush  -y \
-  en search_api_solr search_api_solr_custom_server
+  drupal/search_api_solr \
+  drupal/facets drupal/search_api_autocomplete drupal/search_api_location drupal/search_api_spellcheck \
+  #pepesan/search_api_solr_custom_server
 # Disable Page cache and big_pipe for varnish and search for solr
 docker-compose exec -u www-data \
   app drush  -y \
   pmu page_cache big_pipe search
+# activanedo módulos
+docker-compose exec -u www-data \
+  app drush  -y \
+  en search_api_solr search_api_solr_defaults facets search_api_autocomplete search_api_location search_api_location_views search_api_spellcheck
+# creando el core en solr
+docker-compose exec \
+  solr \
+  solr create_core -c drupal -d /opt/solr/server/solr/drupal
+
+#Falta coger el config.zip y aplicarlo
+#export SOLR_VERSION=8.6.1
+#sudo chmod 777 ./volumes/app-tmp
+#cp config-drupal.zip ./volumes/app-tmp
+#docker-compose exec -u www-data \
+#  -e SOLR_VERSION=$SOLR_VERSION  \
+#  app drush  -y \
+#
+#docker-compose exec -u www-data \
+#  app drush  -y \
+#  en search_api_solr search_api_solr_custom_server
+
 # Install varnish
 #docker-compose exec -u www-data \
 #  app composer \
@@ -75,9 +95,7 @@ docker-compose exec -u www-data \
   app drush  -y \
   en adv_varnish
 
-docker-compose exec \
-  solr \
-  solr create_core -c drupal -d /opt/solr/server/solr/drupal
+
 # Locale management
 docker-compose exec -u www-data \
   app drush  -y \

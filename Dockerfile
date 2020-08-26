@@ -105,7 +105,7 @@ ENV LD_PRELOAD /usr/local/lib/preloadable_libiconv.so
 
 COPY --from=composer:1.10 /usr/bin/composer /usr/local/bin/
 
-ENV DRUSH_VERSION=8.4.0
+ENV DRUSH_VERSION=9.7.2
 # Install Drush
 WORKDIR /var/www
 USER root
